@@ -20,14 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void _selectImage() async {
     final XFile? im = await picker.pickImage(source: ImageSource.gallery);
     if (im == null) return;
-    setState(() {
-      showDialog(
-          context: context,
-          builder: (ctx) => UseImage(
-                image: File(im.path),
-              ));
-      image = File(im.path);
-    });
+    bool? isImage = await showDialog(
+        context: context, builder: (ctx) => UseImage(image: File(im.path)));
+    isImage ??= false;
+    if (isImage) {
+      setState(() {
+        image = File(im.path);
+      });
+    }
   }
 
   @override
