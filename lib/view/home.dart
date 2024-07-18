@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:celebrare/controller/image_mask_controller.dart';
 import 'package:celebrare/utils/colors.dart';
 import 'package:celebrare/widgets/use_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:widget_mask/widget_mask.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,18 +23,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void _selectImage() async {
     final XFile? im = await picker.pickImage(source: ImageSource.gallery);
     if (im == null) return;
-    bool? isImage = await showDialog(
+    showDialog(
         context: context, builder: (ctx) => UseImage(image: File(im.path)));
-    isImage ??= false;
-    if (isImage) {
-      setState(() {
-        image = File(im.path);
-      });
-    }
+    setState(() {
+      image = File(im.path);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final mask = Provider.of<ImageMaskController>(context);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 5,
@@ -85,7 +87,23 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 20,
               ),
-              if (image != null) Image.file(image!)
+              image != null
+                  ? mask.getFinalNum == 0.toString()
+                      ? Image.file(image!)
+                      : WidgetMask(
+                          blendMode: BlendMode.srcATop,
+                          childSaveLayer: true,
+                          mask: Image.file(
+                            image!,
+                            fit: BoxFit.cover,
+                          ),
+                          child: Image.asset(
+                            'assets/user_image_frame_${mask.getFinalNum}.png',
+                            width: 300,
+                          ))
+                  : const SizedBox(
+                      height: 20,
+                    ),
             ],
           ),
         ),

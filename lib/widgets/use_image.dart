@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:celebrare/controller/image_mask_controller.dart';
 import 'package:celebrare/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:widget_mask/widget_mask.dart';
 
 class UseImage extends StatefulWidget {
   const UseImage({super.key, required this.image});
@@ -14,6 +17,8 @@ class UseImage extends StatefulWidget {
 class _UseImageState extends State<UseImage> {
   @override
   Widget build(BuildContext context) {
+    final mask = Provider.of<ImageMaskController>(context);
+
     return Dialog(
       backgroundColor: primaryBg,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
@@ -32,10 +37,22 @@ class _UseImageState extends State<UseImage> {
                       fontSize: 23,
                       color: primaryTextColor),
                 ),
-                Image.file(
-                  widget.image!,
-                  width: 300,
-                ),
+                mask.getImgNum == 0.toString()
+                    ? Image.file(
+                        widget.image!,
+                        width: 300,
+                      )
+                    : WidgetMask(
+                        blendMode: BlendMode.srcATop,
+                        childSaveLayer: true,
+                        mask: Image.file(
+                          widget.image!,
+                          fit: BoxFit.cover,
+                        ),
+                        child: Image.asset(
+                          'assets/user_image_frame_${mask.getImgNum}.png',
+                          width: 300,
+                        )),
                 const SizedBox(height: 16),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -43,7 +60,7 @@ class _UseImageState extends State<UseImage> {
                     children: [
                       TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop(true);
+                            mask.setImgNum(0.toString());
                           },
                           style: TextButton.styleFrom(
                               fixedSize: const Size(30, 50),
@@ -59,7 +76,9 @@ class _UseImageState extends State<UseImage> {
                           )),
                       const SizedBox(width: 5),
                       ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            mask.setImgNum(1.toString());
+                          },
                           style: ElevatedButton.styleFrom(
                               fixedSize: const Size(50, 50),
                               shape: RoundedRectangleBorder(
@@ -72,7 +91,9 @@ class _UseImageState extends State<UseImage> {
                           )),
                       const SizedBox(width: 5),
                       ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            mask.setImgNum(2.toString());
+                          },
                           style: ElevatedButton.styleFrom(
                               fixedSize: const Size(50, 50),
                               shape: RoundedRectangleBorder(
@@ -85,7 +106,9 @@ class _UseImageState extends State<UseImage> {
                           )),
                       const SizedBox(width: 5),
                       ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            mask.setImgNum(3.toString());
+                          },
                           style: ElevatedButton.styleFrom(
                               fixedSize: const Size(50, 50),
                               shape: RoundedRectangleBorder(
@@ -98,7 +121,9 @@ class _UseImageState extends State<UseImage> {
                           )),
                       const SizedBox(width: 5),
                       ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            mask.setImgNum(4.toString());
+                          },
                           style: ElevatedButton.styleFrom(
                               fixedSize: const Size(50, 50),
                               shape: RoundedRectangleBorder(
@@ -118,7 +143,10 @@ class _UseImageState extends State<UseImage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          mask.setFinalNum();
+                          Navigator.of(context).pop();
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: secondaryColors,
                             shape: RoundedRectangleBorder(
@@ -138,7 +166,7 @@ class _UseImageState extends State<UseImage> {
             child: IconButton(
               icon: const Icon(Icons.close, color: primaryTextColor),
               onPressed: () {
-                Navigator.of(context).pop(false);
+                Navigator.of(context).pop();
               },
             ),
           ),

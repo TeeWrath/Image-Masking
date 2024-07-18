@@ -1,6 +1,8 @@
+import 'package:celebrare/controller/image_mask_controller.dart';
 import 'package:celebrare/view/home.dart';
 import 'package:celebrare/view/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,10 +14,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // home: SplashScreen(),
-      home: HomeScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ImageMaskController())
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        // home: SplashScreen(),
+        home: HomeScreen(),
+      ),
     );
   }
 }
