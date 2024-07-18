@@ -4,6 +4,7 @@ import 'package:celebrare/controller/image_mask_controller.dart';
 import 'package:celebrare/utils/colors.dart';
 import 'package:celebrare/widgets/use_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -36,9 +37,18 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 5,
         shadowColor: Colors.black,
         backgroundColor: primaryBg,
-        leading: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
+        leading: IconButton(
+          onPressed: () {
+            if (Platform.isAndroid) {
+              SystemNavigator.pop();
+            } else if (Platform.isIOS) {
+              exit(0);
+            }
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
         ),
         title: const Text(
           'Add Image / Icon',
@@ -93,19 +103,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? mask.getFinalNum == 0.toString()
                       ? Image.file(image!)
                       : WidgetMask(
-                              blendMode: BlendMode.srcATop,
-                              childSaveLayer: true,
-                              mask: Image.file(
-                                image!,
-                                fit: BoxFit.cover,
-                              ),
-                              child: Image.asset(
-                                'assets/user_image_frame_${mask.getFinalNum}.png',
-                                width: 300,
-                              ))
-                          : const SizedBox(
-                              height: 20,
-                            )
+                          blendMode: BlendMode.srcATop,
+                          childSaveLayer: true,
+                          mask: Image.file(
+                            image!,
+                            fit: BoxFit.cover,
+                          ),
+                          child: Image.asset(
+                            'assets/user_image_frame_${mask.getFinalNum}.png',
+                            width: 300,
+                          ))
+                  : const SizedBox(
+                      height: 20,
+                    )
             ],
           ),
         ),
