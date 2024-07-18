@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:celebrare/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,12 +14,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ImagePicker picker = ImagePicker();
 
-  XFile? image;
+  File? image;
 
   void _selectImage() async {
-    XFile? im = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? im = await picker.pickImage(source: ImageSource.gallery);
+    if (im == null) return;
     setState(() {
-      image = im;
+      image = File(im.path);
     });
   }
 
