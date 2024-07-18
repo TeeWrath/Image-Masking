@@ -1,3 +1,4 @@
+import 'package:celebrare/view/home.dart';
 import 'package:celebrare/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      // home: SplashScreen(),
+      home: HomeScreen(),
     );
   }
 }
