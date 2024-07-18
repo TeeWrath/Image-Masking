@@ -20,14 +20,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   File? image;
 
-  void _selectImage() async {
+  Future<XFile> _selectImage() async {
     final XFile? im = await picker.pickImage(source: ImageSource.gallery);
-    if (im == null) return;
     showDialog(
-        context: context, builder: (ctx) => UseImage(image: File(im.path)));
-    setState(() {
-      image = File(im.path);
-    });
+        context: context, builder: (ctx) => UseImage(image: File(im!.path)));
+    return im!;
   }
 
   @override
@@ -71,7 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 16,
                     ),
                     ElevatedButton(
-                        onPressed: _selectImage,
+                        onPressed: () async {
+                          XFile im = await _selectImage();
+                          setState(() {
+                            image = File(im.path);
+                          });
+                        },
                         style: ElevatedButton.styleFrom(
                             fixedSize: const Size(177, 25),
                             backgroundColor: secondaryColors,
@@ -91,19 +93,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? mask.getFinalNum == 0.toString()
                       ? Image.file(image!)
                       : WidgetMask(
-                          blendMode: BlendMode.srcATop,
-                          childSaveLayer: true,
-                          mask: Image.file(
-                            image!,
-                            fit: BoxFit.cover,
-                          ),
-                          child: Image.asset(
-                            'assets/user_image_frame_${mask.getFinalNum}.png',
-                            width: 300,
-                          ))
-                  : const SizedBox(
-                      height: 20,
-                    ),
+                              blendMode: BlendMode.srcATop,
+                              childSaveLayer: true,
+                              mask: Image.file(
+                                image!,
+                                fit: BoxFit.cover,
+                              ),
+                              child: Image.asset(
+                                'assets/user_image_frame_${mask.getFinalNum}.png',
+                                width: 300,
+                              ))
+                          : const SizedBox(
+                              height: 20,
+                            )
             ],
           ),
         ),
