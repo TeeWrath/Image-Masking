@@ -1,8 +1,25 @@
 import 'package:celebrare/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ImagePicker picker = ImagePicker();
+
+  XFile? image;
+
+  void _selectImage() async {
+    XFile? im = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = im;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +58,9 @@ class HomeScreen extends StatelessWidget {
                   height: 16,
                 ),
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _selectImage,
                     style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(177, 25),
+                        fixedSize: const Size(177, 25),
                         backgroundColor: secondaryColors,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3))),
