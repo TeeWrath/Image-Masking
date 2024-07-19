@@ -5,6 +5,7 @@ import 'package:celebrare/utils/colors.dart';
 import 'package:celebrare/widgets/use_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -21,11 +22,53 @@ class _HomeScreenState extends State<HomeScreen> {
 
   File? image;
 
-  Future<XFile> _selectImage() async {
+  Future<File> _selectImage(BuildContext context) async {
     final XFile? im = await picker.pickImage(source: ImageSource.gallery);
+    if (im == null) {
+      return Future.error('No image selected');
+    }
+
+    final CroppedFile? croppedImg =
+        await ImageCropper().cropImage(sourcePath: im.path, uiSettings: [
+      AndroidUiSettings(
+        toolbarTitle: 'Crop Image',
+        toolbarColor: primaryTextColor,
+        toolbarWidgetColor: Colors.white,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square,
+        ],
+      ),
+      IOSUiSettings(
+        title: 'Crop Image',
+        aspectRatioPresets: [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square,
+        ],
+      ),
+      WebUiSettings(
+        context: context,
+      ),
+    ]);
+
+    if (croppedImg == null) {
+      return Future.error('Image cropping cancelled');
+    }
+
     showDialog(
-        context: context, builder: (ctx) => UseImage(image: File(im!.path)));
-    return im!;
+      context: context,
+      builder: (ctx) => UseImage(image: File(croppedImg.path)),
+    );
+
+    return File(croppedImg.path);
+  }
+
+  void _exitApp() {
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else if (Platform.isIOS) {
+      exit(0);
+    }
   }
 
   @override
@@ -38,13 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
         shadowColor: Colors.black,
         backgroundColor: primaryBg,
         leading: IconButton(
-          onPressed: () {
-            if (Platform.isAndroid) {
-              SystemNavigator.pop();
-            } else if (Platform.isIOS) {
-              exit(0);
-            }
-          },
+          onPressed: _exitApp,
           icon: const Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
@@ -79,9 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          XFile im = await _selectImage();
+                          File im = await _selectImage(context);
                           setState(() {
-                            image = File(im.path);
+                            image = im;
                           });
                         },
                         style: ElevatedButton.styleFrom(
