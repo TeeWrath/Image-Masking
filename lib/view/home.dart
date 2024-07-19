@@ -19,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ImagePicker picker = ImagePicker();
-
   File? image;
 
   Future<File> _selectImage(BuildContext context) async {
