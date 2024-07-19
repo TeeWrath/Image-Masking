@@ -1,5 +1,5 @@
 import 'package:celebrare/controller/image_mask_controller.dart';
-import 'package:celebrare/view/splash_screen.dart';
+import 'package:celebrare/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
+        home: HomeScreen(),
       ),
     );
   }

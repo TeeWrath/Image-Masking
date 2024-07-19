@@ -1,9 +1,8 @@
-# celebrare
+# Image Masking
 
-A new Flutter project.
+A Flutter project to demonstrate how to mask images in Flutter.
 
 ## Getting Started
-This is a very crucial step(must do pub get)
 ```dart
 flutter pub get
 ```
