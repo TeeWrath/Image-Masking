@@ -3,7 +3,7 @@
 A new Flutter project.
 
 ## Getting Started
-
+This is a very crucial step(must do pub get)
 ```dart
 flutter pub get
 ```
