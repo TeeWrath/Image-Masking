@@ -37,7 +37,7 @@ class _UseImageState extends State<UseImage> {
                       fontSize: 23,
                       color: primaryTextColor),
                 ),
-                mask.getImgNum == 0.toString()
+                mask.getImgNum == 0.toString() || mask.getImgNum == 5.toString()
                     ? Image.file(
                         widget.image!,
                         width: 300,
@@ -166,6 +166,7 @@ class _UseImageState extends State<UseImage> {
             child: IconButton(
               icon: const Icon(Icons.close, color: primaryTextColor),
               onPressed: () {
+                mask.setImgNum(5.toString());
                 Navigator.of(context).pop();
               },
             ),

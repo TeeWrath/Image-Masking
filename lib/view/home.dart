@@ -21,7 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final ImagePicker picker = ImagePicker();
   File? image;
 
-  Future<File> _selectImage(BuildContext context) async {
+  Future<void> _selectImage(BuildContext context) async {
+    final mask = Provider.of<ImageMaskController>(context, listen: false);
     final XFile? im = await picker.pickImage(source: ImageSource.gallery);
     if (im == null) {
       return Future.error('No image selected');
@@ -57,9 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => UseImage(image: File(croppedImg.path)),
-    );
-
-    return File(croppedImg.path);
+    ).whenComplete(() {
+      if (mask.getImgNum != 5.toString()) {
+        setState(() {
+          image = File(croppedImg.path);
+        });
+      }
+    });
   }
 
   void _exitApp() {
@@ -115,10 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          File im = await _selectImage(context);
-                          setState(() {
-                            image = im;
-                          });
+                          await _selectImage(context);
                         },
                         style: ElevatedButton.styleFrom(
                             fixedSize: const Size(177, 25),
